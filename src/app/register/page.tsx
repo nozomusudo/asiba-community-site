@@ -5,11 +5,9 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import BasicInfoStep from '@/components/register/BasicInfoStep';
-import AffiliationStep from '@/components/register/AffiliationStep';
-import SkillsStep from '@/components/register/SkillsStep';
-import InterestsStep from '@/components/register/InterestsStep';
 import ProfileStep from '@/components/register/ProfileStep';
 import ConfirmationStep from '@/components/register/ConfirmationStep';
+import { FormData } from '@/types/form';
 
 // ステップの型定義
 type Step = {
@@ -21,18 +19,6 @@ const STEPS: Step[] = [
   {
     title: "基本情報",
     description: "アカウントの基本情報を入力してください",
-  },
-  {
-    title: "所属情報",
-    description: "あなたの所属に関する情報を教えてください",
-  },
-  {
-    title: "専門分野・スキル",
-    description: "あなたの専門性やスキルについて教えてください",
-  },
-  {
-    title: "興味・関心",
-    description: "どのような活動に興味がありますか？",
   },
   {
     title: "プロフィール設定",
@@ -47,47 +33,14 @@ const STEPS: Step[] = [
 export default function RegisterPage() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData] = useState({
-    // Step 1: 基本情報
+  const [formData, setFormData] = useState<FormData>({
     email: '',
     password: '',
     nameKanji: '',
-    nameKana: '',
-    birthDate: '',
-    phone: '',
-    
-    // Step 2: 所属情報
-    organization: '',
-    department: '',
-    laboratory: '',
-    grade: '',
-    supervisor: '',
-    
-    // Step 3: 専門分野・スキル
-    specialization: '',
-    skills: [],
-    certifications: '',
+    nameEnglish: '',
     portfolioUrl: '',
-    
-    // Step 4: 興味・関心
-    interests: '',
-    projectType: '',
-    discovery: '',
-    availability: '',
-    
-    // Step 5: プロフィール設定
-    profileImage: null,
-    bio: '',
-    twitter: '',
-    instagram: '',
-    visibility: 'public',
-    
-    // Step 6: 確認・同意
     termsAgreed: false,
     privacyAgreed: false,
-    guidelinesAgreed: false,
-    notifyEvents: true,
-    notifyUpdates: true,
   });
 
   // エラー状態の追加
@@ -119,14 +72,8 @@ export default function RegisterPage() {
       case 0:
         return <BasicInfoStep formData={formData} setFormData={setFormData} />;
       case 1:
-        return <AffiliationStep formData={formData} setFormData={setFormData} />;
-      case 2:
-        return <SkillsStep formData={formData} setFormData={setFormData} />;
-      case 3:
-        return <InterestsStep formData={formData} setFormData={setFormData} />;
-      case 4:
         return <ProfileStep formData={formData} setFormData={setFormData} />;
-      case 5:
+      case 2:
         return <ConfirmationStep formData={formData} setFormData={setFormData} />;
       default:
         return null;
@@ -138,71 +85,34 @@ export default function RegisterPage() {
     if (currentStep !== STEPS.length - 1) return;
 
     try {
-      // 1. 最小限の情報でユーザーを作成
+      // ユーザー登録とプロフィール情報を同時に送信
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
-            data: {
-              full_name: formData.nameKanji,
-            },
-          },
+          data: {
+            // メタデータとして全ての情報を送信
+            full_name: formData.nameKanji,
+            name_kanji: formData.nameKanji,
+            name_english: formData.nameEnglish,
+            portfolio_url: formData.portfolioUrl,
+            updated_at: new Date().toISOString()
+          }
+        }
       });
 
-      if (authError) {
+      if (authError || !authData.user) {
         console.error('認証エラー:', authError);
         setError('登録に失敗しました。もう一度お試しください。');
         return;
       }
 
-      if (!authData.user) {
-        console.error('ユーザーデータがありません');
-        return;
-      }
-
-      // 2. プロフィール情報を更新
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({
-          name_kanji: formData.nameKanji,
-          name_kana: formData.nameKana,
-          birth_date: formData.birthDate,
-          phone: formData.phone,
-          organization: formData.organization,
-          department: formData.department,
-          laboratory: formData.laboratory,
-          grade: formData.grade,
-          supervisor: formData.supervisor,
-          specialization: formData.specialization,
-          skills: formData.skills,
-          certifications: formData.certifications,
-          portfolio_url: formData.portfolioUrl,
-          interests: formData.interests,
-          project_type: formData.projectType,
-          discovery: formData.discovery,
-          availability: formData.availability,
-          bio: formData.bio,
-          twitter_url: formData.twitter,
-          instagram_url: formData.instagram,
-          visibility: formData.visibility,
-          notify_events: formData.notifyEvents,
-          notify_updates: formData.notifyUpdates
-        })
-        .eq('id', authData.user.id);
-
-      if (profileError) {
-        console.error('プロフィール更新エラー:', profileError);
-        // TODO: ユーザーにエラーを表示
-        return;
-      }
-
       // 登録成功
-      console.log('登録成功:', authData);
       router.push('/register/complete');
 
     } catch (error) {
       console.error('登録エラー:', error);
-      // TODO: ユーザーにエラーを表示
+      setError('登録処理中にエラーが発生しました。');
     }
   };
 
