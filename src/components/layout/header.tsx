@@ -63,16 +63,16 @@ export default function Header() {
           {/* メインナビゲーション */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link href="/projects" className="text-gray-600 hover:text-gray-900">
-              プロジェクト
+              Project
             </Link>
             <Link href="/events" className="text-gray-600 hover:text-gray-900">
-              イベント
+              Event
             </Link>
             <Link href="/members" className="text-gray-600 hover:text-gray-900">
-              メンバー
+              Member
             </Link>
             <Link href="/ideas" className="text-gray-600 hover:text-gray-900">
-              アイデア
+              Idea
             </Link>
           </nav>
 
@@ -142,25 +142,25 @@ export default function Header() {
                 href="/projects"
                 className="block px-3 py-2 text-gray-600 hover:text-gray-900"
               >
-                プロジェクト
+                Project
               </Link>
               <Link
                 href="/events"
                 className="block px-3 py-2 text-gray-600 hover:text-gray-900"
               >
-                イベント
+                Event
               </Link>
               <Link
                 href="/members"
                 className="block px-3 py-2 text-gray-600 hover:text-gray-900"
               >
-                メンバー
+                Member
               </Link>
               <Link
                 href="/ideas"
                 className="block px-3 py-2 text-gray-600 hover:text-gray-900"
               >
-                アイデア
+                Idea
               </Link>
             </div>
 
