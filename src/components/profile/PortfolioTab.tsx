@@ -1,5 +1,8 @@
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import { useEffect, useState, useCallback } from 'react';
+import { supabase } from '@/lib/supabase';
+import ProjectCard from '@/components/project/ProjectCard';
 
 // PDF.jsのワーカーのパスを設定
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
@@ -9,6 +12,25 @@ type PortfolioTabProps = {
 };
 
 export default function PortfolioTab({ profile }: PortfolioTabProps) {
+  const [projects, setProjects] = useState<any[]>([]);
+
+  const fetchProjects = useCallback(async () => {
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('leader', profile.id);
+
+    if (error) {
+      console.error('Error fetching projects:', error);
+    } else {
+      setProjects(data || []);
+    }
+  }, [profile.id]);
+
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
+
   return (
     <div className="space-y-8">
       {/* PDF プレビュー */}
@@ -43,16 +65,8 @@ export default function PortfolioTab({ profile }: PortfolioTabProps) {
       <div className="space-y-4">
         <h3 className="font-bold text-lg">プロジェクト</h3>
         <div className="grid grid-cols-2 gap-4">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-white rounded-lg shadow overflow-hidden">
-              <div className="aspect-video bg-gray-100" />
-              <div className="p-4">
-                <h4 className="font-bold">プロジェクト {i}</h4>
-                <p className="text-sm text-gray-600 mt-1">
-                  プロジェクトの説明文がここに入ります。
-                </p>
-              </div>
-            </div>
+          {projects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
           ))}
         </div>
       </div>
