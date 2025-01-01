@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import Masonry from 'react-masonry-css';
+import '@/app/globals.css';
 
 type Bookmark = {
   _id: string;
@@ -46,24 +48,37 @@ export default function RaindropTab() {
     return <div className="text-red-600">{error}</div>;
   }
 
+  const breakpointColumnsObj = {
+    default: 4,
+    1100: 3,
+    700: 2,
+    500: 1,
+  };
+
   return (
     <div>
       <h2 className="text-xl font-bold mb-4">Raindrop ブックマーク</h2>
-      <ul className="space-y-4">
+      <Masonry
+        breakpointCols={breakpointColumnsObj}
+        className="my-masonry-grid"
+        columnClassName="my-masonry-grid_column"
+      >
         {bookmarks.map((bookmark) => (
-          <li key={bookmark._id} className="bg-white p-4 rounded-lg shadow">
-            <a href={bookmark.link} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-4">
+          <div key={bookmark._id} className="bg-white p-4 rounded-lg shadow">
+            <a href={bookmark.link} target="_blank" rel="noopener noreferrer" className="flex flex-col space-y-2">
               {bookmark.cover && (
-                <img src={bookmark.cover} alt={bookmark.title} className="w-16 h-16 object-cover rounded" />
+                <img src={bookmark.cover} alt={bookmark.title} className="w-full h-32 object-cover rounded" />
               )}
               <div>
                 <h3 className="text-lg font-bold">{bookmark.title}</h3>
-                <p className="text-sm text-gray-600">{bookmark.excerpt}</p>
+                <p className="text-sm text-gray-600" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                  {bookmark.excerpt}
+                </p>
               </div>
             </a>
-          </li>
+          </div>
         ))}
-      </ul>
+      </Masonry>
     </div>
   );
 } 

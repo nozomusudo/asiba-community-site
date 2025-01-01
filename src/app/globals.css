@@ -19,3 +19,19 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.my-masonry-grid {
+  display: flex;
+  margin-left: -20px; /* Adjust this value to control the gap */
+  width: auto;
+}
+
+.my-masonry-grid_column {
+  padding-left: 20px; /* Adjust this value to control the gap */
+  background-clip: padding-box;
+}
+
+/* Optional: Style of the individual items */
+.my-masonry-grid_column > div {
+  margin-bottom: 20px; /* Adjust this value to control the gap */
+}
