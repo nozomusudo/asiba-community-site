@@ -1,33 +1,66 @@
-import { Book } from 'lucide-react';
-import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
+import SearchBooksModal from '@/components/books/SearchBooksModal';
+import BookshelfDisplay from '@/components/books/BookshelfDisplay';
 
-type BookshelfTabProps = {
-  profile: any;
-};
+export default function BookshelfTab() {
+  const [books, setBooks] = useState<any[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
-export default function BookshelfTab({ profile }: BookshelfTabProps) {
+  useEffect(() => {
+    const getUser = async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error('Error fetching user:', error.message);
+      } else {
+        setUserId(data?.user?.id || null);
+      }
+    };
+
+    getUser();
+  }, []);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const fetchBooks = async () => {
+      const { data, error } = await supabase
+        .from('books')
+        .select('*')
+        .eq('added_by', userId);
+
+      if (error) {
+        console.error('Error fetching books:', error);
+      } else {
+        setBooks(data || []);
+      }
+    };
+
+    fetchBooks();
+  }, [userId]);
+
+  const likeBook = async (bookId: string) => {
+    const { data, error } = await supabase
+      .from('books')
+      .update({ likes: supabase.raw('likes + 1') })
+      .eq('id', bookId);
+
+    if (error) {
+      console.error('Error liking book:', error);
+    } else {
+      console.log('Book liked:', data);
+    }
+  };
+
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {[1, 2, 3, 4, 5, 6, 8].map((i) => (
-        <div key={i} className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="aspect-[3/4] relative bg-gray-100">
-            <Image
-              src={`/books/book-${i}.jpg`}
-              alt={`建築の本 ${i}`}
-              fill
-              className="object-cover"
-            />
-          </div>
-          <div className="p-4">
-            <h4 className="font-bold">建築の本 {i}</h4>
-            <p className="text-sm text-gray-600">著者名</p>
-            <div className="mt-2 flex items-center gap-2">
-              <Book className="w-4 h-4 text-gray-400" />
-              <span className="text-sm text-gray-600">読書中</span>
-            </div>
-          </div>
-        </div>
-      ))}
+    <div>
+      <h2 className="text-xl font-bold mb-4">My Bookshelf</h2>
+      <button onClick={() => setIsModalOpen(true)} className="mb-4 p-2 bg-blue-500 text-white">
+        本を追加
+      </button>
+      <SearchBooksModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <BookshelfDisplay books={books} onLike={likeBook} />
     </div>
   );
 } 

@@ -33,5 +33,10 @@ body {
 
 /* Optional: Style of the individual items */
 .my-masonry-grid_column > div {
-  margin-bottom: 20px; /* Adjust this value to control the gap */
+  margin-bottom: 20px; /* Adjust this value to control the vertical gap */
+}
+
+/* Add top margin to the first item in each column */
+.my-masonry-grid_column > div:first-child {
+  margin-top: 20px; /* Adjust this value to control the top gap */
 }
