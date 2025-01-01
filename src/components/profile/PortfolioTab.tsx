@@ -25,12 +25,12 @@ export default function PortfolioTab({ profile }: PortfolioTabProps) {
               ダウンロード
             </a>
           </div>
-          <div className="aspect-[1/1.414] bg-gray-100">
+          <div className="bg-gray-100" style={{ height: '500px' }}>
             <iframe
               src={`https://docs.google.com/viewer?url=${encodeURIComponent(
                 profile.portfolio_url
               )}&embedded=true`}
-              style={{ width: '100%', height: '500px' }}
+              style={{ width: '100%', height: '100%' }}
               frameBorder="0"
             ></iframe>
           </div>

@@ -4,9 +4,10 @@ import Link from 'next/link';
 
 type ProfileHeaderProps = {
   profile: any;
+  isMypage?: boolean;
 };
 
-export default function ProfileHeader({ profile }: ProfileHeaderProps) {
+export default function ProfileHeader({ profile, isMypage = false }: ProfileHeaderProps) {
   return (
     <div className="bg-white shadow">
       <div className="max-w-6xl mx-auto px-4 py-8">
@@ -38,13 +39,15 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
                 <p className="text-gray-500">{profile.name_english}</p>
                 <p className="mt-2 text-gray-600">{profile.organization}</p>
               </div>
-              <Link
-                href="/profile/edit"
-                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-md"
-              >
-                <Edit className="w-4 h-4" />
-                編集
-              </Link>
+              {isMypage && (
+                <Link
+                  href="/profile/edit"
+                  className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-md"
+                >
+                  <Edit className="w-4 h-4" />
+                  編集
+                </Link>
+              )}
             </div>
 
             {/* 連絡先 */}

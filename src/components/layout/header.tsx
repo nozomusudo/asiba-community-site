@@ -71,6 +71,9 @@ export default function Header() {
             <Link href="/members" className="text-gray-600 hover:text-gray-900">
               メンバー
             </Link>
+            <Link href="/ideas" className="text-gray-600 hover:text-gray-900">
+              アイデア
+            </Link>
           </nav>
 
           {/* ユーザーメニュー */}
@@ -152,6 +155,12 @@ export default function Header() {
                 className="block px-3 py-2 text-gray-600 hover:text-gray-900"
               >
                 メンバー
+              </Link>
+              <Link
+                href="/ideas"
+                className="block px-3 py-2 text-gray-600 hover:text-gray-900"
+              >
+                アイデア
               </Link>
             </div>
 

@@ -1,15 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import ProfileHeader from '@/components/profile/ProfileHeader';
 import PortfolioTab from '@/components/profile/PortfolioTab';
 import BookshelfTab from '@/components/profile/BookshelfTab';
 import IdeasTab from '@/components/profile/IdeasTab';
 
-export default function ProfilePage() {
+export default function MemberProfilePage() {
   const router = useRouter();
+  const { id } = useParams();
   const [activeTab, setActiveTab] = useState('portfolio');
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -18,13 +19,6 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (!session) {
-          router.push('/login');
-          return;
-        }
-
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select(`
@@ -40,7 +34,7 @@ export default function ProfilePage() {
             role,
             updated_at
           `)
-          .eq('id', session.user.id)
+          .eq('id', id)
           .single();
 
         if (profileError) {
@@ -58,7 +52,7 @@ export default function ProfilePage() {
     };
 
     fetchProfile();
-  }, [router]);
+  }, [id]);
 
   if (loading) {
     return (
@@ -78,7 +72,7 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <ProfileHeader profile={profile} isMypage={true} />
+      <ProfileHeader profile={profile} />
 
       {/* タブナビゲーション */}
       <div className="bg-white shadow">
