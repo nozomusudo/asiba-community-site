@@ -1,6 +1,8 @@
 import { Edit, Mail, Twitter, Globe } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
+import ProjectModal from './ProjectModal';
 
 type ProfileHeaderProps = {
   profile: any;
@@ -8,6 +10,8 @@ type ProfileHeaderProps = {
 };
 
 export default function ProfileHeader({ profile, isMypage = false }: ProfileHeaderProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div className="bg-white shadow">
       <div className="max-w-6xl mx-auto px-4 py-8">
@@ -40,13 +44,21 @@ export default function ProfileHeader({ profile, isMypage = false }: ProfileHead
                 <p className="mt-2 text-gray-600">{profile.organization}</p>
               </div>
               {isMypage && (
-                <Link
-                  href="/profile/edit"
-                  className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-md"
-                >
-                  <Edit className="w-4 h-4" />
-                  編集
-                </Link>
+                <div className="flex gap-2">
+                  <Link
+                    href="/profile/edit"
+                    className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-md"
+                  >
+                    <Edit className="w-4 h-4" />
+                    編集
+                  </Link>
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                  >
+                    プロジェクト登録
+                  </button>
+                </div>
               )}
             </div>
 
@@ -101,6 +113,7 @@ export default function ProfileHeader({ profile, isMypage = false }: ProfileHead
           </div>
         </div>
       </div>
+      <ProjectModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 } 
