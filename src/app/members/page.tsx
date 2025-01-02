@@ -10,7 +10,6 @@ type Member = {
   name_kanji: string;
   name_english: string;
   avatar_url: string;
-  role: string;
 };
 
 export default function MembersPage() {
@@ -23,7 +22,7 @@ export default function MembersPage() {
       try {
         const { data, error } = await supabase
           .from('profiles')
-          .select('id, name_kanji, name_english, avatar_url, role');
+          .select('id, name_kanji, name_english, avatar_url');
 
         if (error) {
           console.error('Error fetching members:', error);
@@ -79,7 +78,6 @@ export default function MembersPage() {
                   <div>
                     <h2 className="text-lg font-bold">{member.name_kanji}</h2>
                     <p className="text-sm text-gray-600">{member.name_english}</p>
-                    <p className="text-sm text-gray-500">{member.role}</p>
                   </div>
                 </div>
               </div>
