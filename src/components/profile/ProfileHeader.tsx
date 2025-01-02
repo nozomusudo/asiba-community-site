@@ -1,16 +1,48 @@
-import { Edit, Mail, Twitter, Globe } from 'lucide-react';
+import { Edit, Mail, Twitter, Globe, RefreshCw, Instagram, FileText } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ProjectModal from './ProjectModal';
+import { supabase } from '@/lib/supabase';
 
 type ProfileHeaderProps = {
-  profile: any;
+  initialProfile: any;
   isMypage?: boolean;
 };
 
-export default function ProfileHeader({ profile, isMypage = false }: ProfileHeaderProps) {
+export default function ProfileHeader({ initialProfile, isMypage = false }: ProfileHeaderProps) {
+  const [profile, setProfile] = useState(initialProfile);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const fetchProfile = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const { data: profileData, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+
+      if (error) {
+        console.error('Error fetching profile:', error.message);
+        return;
+      }
+
+      setProfile(profileData);
+    } catch (error) {
+      console.error('Unexpected error:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  if (!profile) {
+    return <div>Loading...</div>; // or any loading indicator
+  }
 
   return (
     <div className="bg-white shadow">
@@ -76,21 +108,28 @@ export default function ProfileHeader({ profile, isMypage = false }: ProfileHead
                   <Twitter className="w-5 h-5 fill-current" />
                 </a>
               )}
+              {profile.instagram_url && (
+                <a
+                  href={profile.instagram_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-gray-500 hover:text-gray-900"
+                >
+                  <Instagram className="w-5 h-5" />
+                </a>
+              )}
+              {profile.note_url && (
+                <a
+                  href={profile.note_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-gray-500 hover:text-gray-900"
+                >
+                  <FileText className="w-5 h-5" />
+                </a>
+              )}
             </div>
 
-            {/* タグ */}
-            {profile.skills && (
-              <div className="mt-4 flex flex-wrap gap-2">
-                {profile.skills.map((skill: string) => (
-                  <span
-                    key={skill}
-                    className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            )}
           </div>
         </div>
       </div>
