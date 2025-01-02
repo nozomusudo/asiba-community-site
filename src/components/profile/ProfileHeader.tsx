@@ -1,47 +1,20 @@
 import { Edit, Mail, Twitter, Globe, RefreshCw, Instagram, FileText } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import ProjectModal from './ProjectModal';
-import { supabase } from '@/lib/supabase';
 
 type ProfileHeaderProps = {
   initialProfile: any;
-  isMypage?: boolean;
+  isMypage: boolean;
 };
 
 export default function ProfileHeader({ initialProfile, isMypage = false }: ProfileHeaderProps) {
-  const [profile, setProfile] = useState(initialProfile);
+  const [profile] = useState(initialProfile);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const fetchProfile = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
-
-      const { data: profileData, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', session.user.id)
-        .single();
-
-      if (error) {
-        console.error('Error fetching profile:', error.message);
-        return;
-      }
-
-      setProfile(profileData);
-    } catch (error) {
-      console.error('Unexpected error:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchProfile();
-  }, []);
-
   if (!profile) {
-    return <div>Loading...</div>; // or any loading indicator
+    return <div></div>; // or any loading indicator
   }
 
   return (

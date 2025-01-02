@@ -1,36 +1,16 @@
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-import { useEffect, useState, useCallback } from 'react';
-import { supabase } from '@/lib/supabase';
 import ProjectCard from '@/components/project/ProjectCard';
+import { Profile } from '@/types/form';
 
-// PDF.jsのワーカーのパスを設定
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
 
 type PortfolioTabProps = {
-  profile: any;
+  profile: Profile;
+  projects: any[];
 };
 
-export default function PortfolioTab({ profile }: PortfolioTabProps) {
-  const [projects, setProjects] = useState<any[]>([]);
-
-  const fetchProjects = useCallback(async () => {
-    const { data, error } = await supabase
-      .from('projects')
-      .select('*')
-      .eq('leader', profile.id);
-
-    if (error) {
-      console.error('Error fetching projects:', error);
-    } else {
-      setProjects(data || []);
-    }
-  }, [profile.id]);
-
-  useEffect(() => {
-    fetchProjects();
-  }, [fetchProjects]);
-
+export default function PortfolioTab({ profile, projects }: PortfolioTabProps) {
   return (
     <div className="space-y-8">
       {/* PDF プレビュー */}

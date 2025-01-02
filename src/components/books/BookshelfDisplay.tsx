@@ -17,7 +17,8 @@ type Book = {
 };
 
 type BookshelfDisplayProps = {
-  books: Book[];
+  books: any[];
+  onLike: (bookId: string) => void;
 };
 
 export default function BookshelfDisplay({ books }: BookshelfDisplayProps) {

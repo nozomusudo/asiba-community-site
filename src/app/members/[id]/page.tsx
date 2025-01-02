@@ -1,57 +1,21 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
-import ProfileHeader from '@/components/profile/ProfileHeader';
-import PortfolioTab from '@/components/profile/PortfolioTab';
-import BookshelfTab from '@/components/profile/BookshelfTab';
-import IdeasTab from '@/components/profile/IdeasTab';
+import { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
+import ProfileBoard from '@/components/profile/ProfileBoard';
 
 export default function MemberProfilePage() {
-  const router = useRouter();
   const { id } = useParams();
-  const [activeTab, setActiveTab] = useState('portfolio');
-  const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select(`
-            id,
-            name_kanji,
-            name_english,
-            email,
-            avatar_url,
-            organization,
-            twitter_url,
-            portfolio_url,
-            skills,
-            role,
-            updated_at
-          `)
-          .eq('id', id)
-          .single();
-
-        if (profileError) {
-          console.error('Error fetching profile:', profileError);
-          setError('プロフィールの読み込みに失敗しました。');
-          return;
-        }
-
-        setProfile(profileData);
-        setLoading(false);
-      } catch (error) {
-        console.error('Unexpected error:', error);
-        setError('予期せぬエラーが発生しました。');
-      }
-    };
-
-    fetchProfile();
+    if (!id) {
+      setError('ユーザーIDが見つかりません。');
+      setLoading(false);
+    } else {
+      setLoading(false);
+    }
   }, [id]);
 
   if (loading) {
@@ -71,53 +35,11 @@ export default function MemberProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <ProfileHeader profile={profile} />
-
-      {/* タブナビゲーション */}
-      <div className="bg-white shadow">
-        <div className="max-w-6xl mx-auto px-4">
-          <nav className="flex gap-8">
-            <button
-              onClick={() => setActiveTab('portfolio')}
-              className={`py-4 ${
-                activeTab === 'portfolio'
-                  ? 'border-b-2 border-blue-500 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              ポートフォリオ
-            </button>
-            <button
-              onClick={() => setActiveTab('bookshelf')}
-              className={`py-4 ${
-                activeTab === 'bookshelf'
-                  ? 'border-b-2 border-blue-500 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              読書棚
-            </button>
-            <button
-              onClick={() => setActiveTab('ideas')}
-              className={`py-4 ${
-                activeTab === 'ideas'
-                  ? 'border-b-2 border-blue-500 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              アイデアボード
-            </button>
-          </nav>
-        </div>
-      </div>
-
-      {/* タブコンテンツ */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        {activeTab === 'portfolio' && <PortfolioTab profile={profile} />}
-        {activeTab === 'bookshelf' && <BookshelfTab profile={profile} />}
-        {activeTab === 'ideas' && <IdeasTab profile={profile} />}
-      </div>
-    </div>
+    <ProfileBoard
+      userId={id as string}
+      isMypage={false}
+      activeTab="portfolio" // デフォルトのタブ
+      setActiveTab={() => {}} // 必要に応じて実装
+    />
   );
 } 
