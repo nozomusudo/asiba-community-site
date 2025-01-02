@@ -33,11 +33,7 @@ export default function ProfilePage() {
             name_english,
             email,
             avatar_url,
-            organization,
-            twitter_url,
             portfolio_url,
-            skills,
-            role,
             updated_at
           `)
           .eq('id', session.user.id)
