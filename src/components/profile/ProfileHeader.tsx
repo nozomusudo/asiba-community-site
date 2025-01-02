@@ -62,37 +62,18 @@ export default function ProfileHeader({ profile, isMypage = false }: ProfileHead
               )}
             </div>
 
+            <p className="text-gray-500">{profile.bio}</p>
+
             {/* 連絡先 */}
             <div className="mt-4 flex gap-4">
-              {profile.email && (
-                <a
-                  href={`mailto:${profile.email}`}
-                  className="flex items-center gap-1 text-gray-600 hover:text-gray-900"
-                >
-                  <Mail className="w-4 h-4" />
-                  <span>メール</span>
-                </a>
-              )}
               {profile.twitter_url && (
                 <a
                   href={profile.twitter_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-gray-600 hover:text-gray-900"
+                  className="flex items-center gap-1 text-gray-500 hover:text-gray-900"
                 >
-                  <Twitter className="w-4 h-4" />
-                  <span>Twitter</span>
-                </a>
-              )}
-              {profile.portfolio_url && (
-                <a
-                  href={profile.portfolio_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-gray-600 hover:text-gray-900"
-                >
-                  <Globe className="w-4 h-4" />
-                  <span>Website</span>
+                  <Twitter className="w-5 h-5 fill-current" />
                 </a>
               )}
             </div>
