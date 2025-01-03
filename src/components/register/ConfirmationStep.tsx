@@ -21,7 +21,6 @@ export default function ConfirmationStep({ formData, setFormData }: Props) {
           <p>メールアドレス: {formData.email}</p>
           <p>氏名（漢字）: {formData.nameKanji}</p>
           <p>氏名（英語）: {formData.nameEnglish}</p>
-          <p>ポートフォリオURL: {formData.portfolioUrl}</p>
         </div>
       </div>
 

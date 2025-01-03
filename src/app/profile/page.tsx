@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import ProfileBoard from '@/components/profile/ProfileBoard';
 import { Profile } from '@/types/form';
+import Link from 'next/link';
+import { FileText, Bell } from 'lucide-react';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -65,11 +67,29 @@ export default function ProfilePage() {
   if (!profile) return null;
 
   return (
-    <ProfileBoard
-      initialProfile={profile}
-      isMypage={true}
-      activeTab={activeTab}
-      setActiveTab={setActiveTab}
-    />
+    <div>
+      <div className="bg-white shadow-sm py-4">
+        <div className="max-w-6xl mx-auto px-4 flex justify-between items-center">
+          <h1 className="text-xl font-bold">My Page</h1>
+          <div className="flex gap-6">
+            <Link href="/profile/document-submission" className="flex items-center gap-2 text-blue-600 hover:text-blue-700">
+              <FileText className="w-5 h-5" />
+              <span>書類申請</span>
+            </Link>
+            <Link href="/profile/notifications" className="flex items-center gap-2 text-blue-600 hover:text-blue-700">
+              <Bell className="w-5 h-5" />
+              <span>通知</span>
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <ProfileBoard
+        initialProfile={profile}
+        isMypage={true}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
+    </div>
   );
 } 

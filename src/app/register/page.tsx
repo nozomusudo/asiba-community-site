@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import BasicInfoStep from '@/components/register/BasicInfoStep';
-import ProfileStep from '@/components/register/ProfileStep';
 import ConfirmationStep from '@/components/register/ConfirmationStep';
 import { FormData } from '@/types/form';
 
@@ -21,10 +20,6 @@ const STEPS: Step[] = [
     description: "アカウントの基本情報を入力してください",
   },
   {
-    title: "プロフィール設定",
-    description: "あなたのプロフィールを設定しましょう",
-  },
-  {
     title: "確認・同意",
     description: "入力内容を確認し、利用規約に同意してください",
   },
@@ -38,7 +33,6 @@ export default function RegisterPage() {
     password: '',
     nameKanji: '',
     nameEnglish: '',
-    portfolioUrl: '',
     termsAgreed: false,
     privacyAgreed: false,
   });
@@ -72,8 +66,6 @@ export default function RegisterPage() {
       case 0:
         return <BasicInfoStep formData={formData} setFormData={setFormData} />;
       case 1:
-        return <ProfileStep formData={formData} setFormData={setFormData} />;
-      case 2:
         return <ConfirmationStep formData={formData} setFormData={setFormData} />;
       default:
         return null;
@@ -91,11 +83,9 @@ export default function RegisterPage() {
         password: formData.password,
         options: {
           data: {
-            // メタデータとして全ての情報を送信
             full_name: formData.nameKanji,
             name_kanji: formData.nameKanji,
             name_english: formData.nameEnglish,
-            portfolio_url: formData.portfolioUrl,
             updated_at: new Date().toISOString()
           }
         }
