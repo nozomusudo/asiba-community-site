@@ -2,7 +2,7 @@ import { Profile } from "@/types/form";
 
 interface SkillsTabProps {
     profile: Partial<Profile>;
-    onChange: (field: keyof Profile, value: any) => void;
+    onChange: (field: keyof Profile, value: string | boolean | string[]) => void;
 }
 
 const SkillsTab: React.FC<SkillsTabProps> = ({ profile, onChange }) => {

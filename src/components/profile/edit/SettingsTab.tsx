@@ -2,7 +2,7 @@ import { Profile } from "@/types/form";
 
 interface SettingsTabProps {
     profile: Partial<Profile>;
-    onChange: (field: keyof Profile, value: any) => void;
+    onChange: (field: keyof Profile, value: string | boolean | string[]) => void;
 }
 
 const SettingsTab: React.FC<SettingsTabProps> = ({ profile, onChange }) => {

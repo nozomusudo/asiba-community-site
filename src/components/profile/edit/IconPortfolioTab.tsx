@@ -5,7 +5,7 @@ import { Camera, X } from 'lucide-react';
 
 interface IconPortfolioTabProps {
     profile: Partial<Profile>;
-    onChange: (field: keyof Profile, value: any) => void;
+    onChange: (field: keyof Profile, value: string | boolean | string[]) => void;
 }
 
 const IconPortfolioTab: React.FC<IconPortfolioTabProps> = ({ profile, onChange }) => {
@@ -25,7 +25,7 @@ const IconPortfolioTab: React.FC<IconPortfolioTabProps> = ({ profile, onChange }
             const filePath = `${session.user.id}/${fileName}`;
 
             // ファイルをアップロード
-            const { error: uploadError, data } = await supabase.storage
+            const { error: uploadError } = await supabase.storage
                 .from(bucket)
                 .upload(filePath, file, {
                     upsert: true,

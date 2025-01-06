@@ -1,4 +1,3 @@
-import { FormData } from '@/types/form';
 
 type Props = {
   formData: any;

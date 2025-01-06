@@ -1,11 +1,12 @@
-import { Edit, Mail, Twitter, Globe, RefreshCw, Instagram, FileText } from 'lucide-react';
+import { Edit, Twitter, Instagram, FileText } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import ProjectModal from './ProjectModal';
+import { Profile } from '@/types/form';
 
 type ProfileHeaderProps = {
-  initialProfile: any;
+  initialProfile: Profile;
   isMypage: boolean;
 };
 
