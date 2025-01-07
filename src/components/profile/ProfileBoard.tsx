@@ -18,7 +18,6 @@ type ProfileBoardProps = {
 export default function ProfileBoard({ initialProfile, userId, isMypage, activeTab, setActiveTab }: ProfileBoardProps) {
   const [profile, setProfile] = useState(initialProfile);
   const [projects, setProjects] = useState<any[]>([]);
-  const [books, setBooks] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchProfileData = async (userId: string | undefined) => {
@@ -57,38 +56,12 @@ export default function ProfileBoard({ initialProfile, userId, isMypage, activeT
       }
     };
 
-    const fetchBooks = async () => {
-      if (profile) {
-        const { data, error } = await supabase
-          .from('books')
-          .select('*')
-          .eq('added_by', profile.id);
-
-        if (error) {
-          console.error('Error fetching books:', error);
-        } else {
-          setBooks(data || []);
-        }
-      }
-    };
-
     fetchProfileData(userId);
     fetchProjects();
-    fetchBooks();
+
   }, [profile, userId]);
 
-  const likeBook = async (bookId: string) => {
-    const { data, error } = await supabase
-      .from('books')
-      .update({ likes: supabase.raw('likes + 1') })
-      .eq('id', bookId);
 
-    if (error) {
-      console.error('Error liking book:', error);
-    } else {
-      console.log('Book liked:', data);
-    }
-  };
 
   if (!profile) {
     return <div></div>; // ローディングインジケーター
@@ -139,7 +112,7 @@ export default function ProfileBoard({ initialProfile, userId, isMypage, activeT
       {/* タブコンテンツ */}
       <div className="max-w-6xl mx-auto px-4 py-8">
         {activeTab === 'portfolio' && <PortfolioTab profile={profile} projects={projects} />}
-        {activeTab === 'bookshelf' && <BookshelfTab profile={profile} books={books} onLike={likeBook} />}
+        {activeTab === 'bookshelf' && <BookshelfTab/>}
         {activeTab === 'ideas' && <IdeasTab profile={profile} />}
       </div>
     </div>
