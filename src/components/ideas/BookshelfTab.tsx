@@ -19,7 +19,7 @@ export default function BookshelfTab() {
   }, []);
 
   const likeBook = async (bookId: string) => {
-    // Fetch the current likes
+    // Step 1: Fetch the current likes
     const { data: bookData, error: fetchError } = await supabase
       .from('books')
       .select('likes')
@@ -31,10 +31,10 @@ export default function BookshelfTab() {
       return;
     }
 
-    // Increment the likes
+    // Step 2: Increment the likes
     const newLikes = (bookData.likes || 0) + 1;
 
-    // Update the likes in the database
+    // Step 3: Update the likes in the database
     const { data, error } = await supabase
       .from('books')
       .update({ likes: newLikes })
