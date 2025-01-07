@@ -28,7 +28,7 @@ export default function ProfileHeader({ initialProfile, isMypage = false }: Prof
               {profile.avatar_url && (
                 <Image
                   src={profile.avatar_url}
-                  alt={profile.name_kanji}
+                  alt={profile.name_kanji || 'User Avatar'}
                   fill
                   className="object-cover"
                 />
