@@ -19,15 +19,31 @@ export default function BookshelfTab() {
   }, []);
 
   const likeBook = async (bookId: string) => {
+    // Fetch the current likes
+    const { data: bookData, error: fetchError } = await supabase
+      .from('books')
+      .select('likes')
+      .eq('id', bookId)
+      .single();
+
+    if (fetchError) {
+      console.error('Error fetching book:', fetchError);
+      return;
+    }
+
+    // Increment the likes
+    const newLikes = (bookData.likes || 0) + 1;
+
+    // Update the likes in the database
     const { data, error } = await supabase
       .from('books')
-      .update({ likes: supabase.raw('likes + 1') })
+      .update({ likes: newLikes })
       .eq('id', bookId);
 
     if (error) {
-      console.error('Error liking book:', error);
+      console.error('Error updating likes:', error);
     } else {
-      console.log('Book liked:', data);
+      console.log('Likes updated successfully:', data);
     }
   };
 
