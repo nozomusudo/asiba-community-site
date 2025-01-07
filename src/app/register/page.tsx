@@ -35,6 +35,7 @@ export default function RegisterPage() {
     nameEnglish: '',
     termsAgreed: false,
     privacyAgreed: false,
+    visibility: 'public',
   });
 
   // エラー状態の追加
