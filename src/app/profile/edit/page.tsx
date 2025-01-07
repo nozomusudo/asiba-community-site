@@ -48,7 +48,9 @@ const TAB_FIELDS: Record<number, { properties: (keyof Profile)[], label: string 
 };
 
 // 部分的な更新を型安全に行うための型
-type UpdateFieldsType = Partial<Profile>;
+type UpdateFieldsType = {
+  [key in keyof Profile]?: string | string[]; // Allow both string and string[] types
+};
 
 export default function ProfileEditPage() {
   const router = useRouter();
@@ -106,32 +108,12 @@ const getUpdateFields = (
   const fieldsToUpdate = TAB_FIELDS[activeTab].properties;
   if (!fieldsToUpdate) return {};
 
-  // リスト型のフィールド名を定義
-  const arrayFields: (keyof Profile)[] = [
-    'skills',
-    'expertise',
-    'certifications',
-    'interests',
-    'project_types',
-    'tags'
-  ];
-
-  // 指定されたフィールドのみを抽出
-  return fieldsToUpdate.reduce((acc, field) => {
-    if (formData[field] !== undefined) {
-      // リスト型フィールドの場合、カンマ区切りの文字列を配列に変換
-      if (arrayFields.includes(field)) {
-        const value = formData[field];
-        if (typeof value === 'string') {
-          // 空文字の場合は空配列、それ以外はカンマ区切りで分割して空白を削除
-          acc[field] = value.trim() === '' 
-            ? [] 
-            : value.split(',').map(item => item.trim());
-        }
-      } else {
-        // 通常のフィールドはそのまま代入
-        acc[field] = formData[field];
-      }
+  return fieldsToUpdate.reduce((acc: UpdateFieldsType, field) => {
+    const value = formData[field];
+    if (typeof value === 'string') {
+      acc[field] = value.trim() === ''
+        ? []
+        : value.split(',').map(item => item.trim());
     }
     return acc;
   }, {} as UpdateFieldsType);
