@@ -114,7 +114,7 @@ const IconPortfolioTab: React.FC<IconPortfolioTabProps> = ({ profile, onChange }
 
             if (deleteError) throw deleteError;
 
-            onChange(field, null);
+            onChange(field, '');
         } catch (error) {
             console.error('Delete error:', error);
             setError('ファイルの削除に失敗しました');
