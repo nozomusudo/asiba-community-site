@@ -34,11 +34,6 @@ export default function ProfileHeader({ initialProfile, isMypage = false }: Prof
                 />
               )}
             </div>
-            <div className="mt-4 flex justify-center">
-              <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
-                {profile.role || 'メンバー'}
-              </span>
-            </div>
           </div>
 
           {/* 名前と基本情報 */}
