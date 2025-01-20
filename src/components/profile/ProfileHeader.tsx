@@ -8,9 +8,10 @@ import { Profile } from '@/types/form';
 type ProfileHeaderProps = {
   initialProfile: Profile;
   isMypage: boolean;
+  roles: string[];
 };
 
-export default function ProfileHeader({ initialProfile, isMypage = false }: ProfileHeaderProps) {
+export default function ProfileHeader({ initialProfile, isMypage = false, roles }: ProfileHeaderProps) {
   const [profile] = useState(initialProfile);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -43,6 +44,14 @@ export default function ProfileHeader({ initialProfile, isMypage = false }: Prof
                 <h1 className="text-2xl font-bold">{profile.name_kanji}</h1>
                 <p className="text-gray-500">{profile.name_english}</p>
                 <p className="mt-2 text-gray-600">{profile.organization}</p>
+                {/* ロール表示 */}
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {roles.map((role, index) => (
+                    <span key={index} className="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
+                      {role}
+                    </span>
+                  ))}
+                </div>
               </div>
               {isMypage && (
                 <div className="flex gap-2">

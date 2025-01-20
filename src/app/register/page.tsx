@@ -36,6 +36,7 @@ export default function RegisterPage() {
     termsAgreed: false,
     privacyAgreed: false,
     visibility: 'public',
+    roles: [],
   });
 
   // エラー状態の追加
@@ -78,7 +79,6 @@ export default function RegisterPage() {
     if (currentStep !== STEPS.length - 1) return;
 
     try {
-      // ユーザー登録とプロフィール情報を同時に送信
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -87,7 +87,7 @@ export default function RegisterPage() {
             full_name: formData.nameKanji,
             name_kanji: formData.nameKanji,
             name_english: formData.nameEnglish,
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
           }
         }
       });
@@ -96,6 +96,14 @@ export default function RegisterPage() {
         console.error('認証エラー:', authError);
         setError('登録に失敗しました。もう一度お試しください。');
         return;
+      }
+
+      // ロールをprofile_rolesテーブルに挿入
+      for (const role of formData.roles) {
+        await supabase.from('profile_roles').insert({
+          profile_id: authData.user.id,
+          role_id: role,
+        });
       }
 
       // 登録成功

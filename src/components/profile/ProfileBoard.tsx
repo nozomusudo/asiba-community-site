@@ -6,7 +6,6 @@ import IdeasTab from './IdeasTab';
 import { supabase } from '@/lib/supabase';
 import { Profile } from '@/types/form';
 
-
 type ProfileBoardProps = {
   initialProfile?: Profile;
   userId?: string;
@@ -15,9 +14,18 @@ type ProfileBoardProps = {
   setActiveTab: (tab: string) => void;
 };
 
+type ProfileRole = {
+  role_id: string;
+  roles: {
+    name: string;
+    description: string;
+  };
+};
+
 export default function ProfileBoard({ initialProfile, userId, isMypage, activeTab, setActiveTab }: ProfileBoardProps) {
   const [profile, setProfile] = useState(initialProfile);
   const [projects, setProjects] = useState<any[]>([]);
+  const [roles, setRoles] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchProfileData = async (userId: string | undefined) => {
@@ -55,13 +63,36 @@ export default function ProfileBoard({ initialProfile, userId, isMypage, activeT
         }
       }
     };
+    
+    const fetchRoles = async () => {
+      if (profile) {
+        const { data, error } = await supabase
+          .from('profile_roles')
+          .select(`
+            role_id,
+            roles:roles (
+              name,
+              description
+            )
+          `)
+          .eq('profile_id', profile.id) as { 
+            data: ProfileRole[] | null; 
+            error: Error | null 
+          };
+    
+        if (error) {
+          console.error('Error fetching roles:', error);
+        } else if (data) {
+          setRoles(data.map((item) => item.roles.name));
+        }
+      }
+    };
 
     fetchProfileData(userId);
     fetchProjects();
+    fetchRoles();
 
   }, [profile, userId]);
-
-
 
   if (!profile) {
     return <div></div>; // ローディングインジケーター
@@ -69,7 +100,7 @@ export default function ProfileBoard({ initialProfile, userId, isMypage, activeT
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <ProfileHeader initialProfile={profile} isMypage={isMypage} />
+      <ProfileHeader initialProfile={profile} isMypage={isMypage} roles={roles} />
 
       {/* タブナビゲーション */}
       <div className="bg-white shadow">

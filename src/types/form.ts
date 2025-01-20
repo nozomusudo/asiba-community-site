@@ -8,6 +8,7 @@ export type FormData = {
 
   // プロフィールの公開範囲
   visibility: string;
+  roles: string[];
 };
 
 //スネークケースでProfile型を定義（supabaseとの連携のため）
